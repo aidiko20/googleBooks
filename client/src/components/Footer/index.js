@@ -4,7 +4,7 @@ function Footer() {
     return (
         <footer>
             <hr />
-            <p className="pull-right">
+            <p className="fixed-buttom">
                 <i className="fab fa-github" /> Bulit using React.js By Aida Yrysbekova
             </p>
         </footer>

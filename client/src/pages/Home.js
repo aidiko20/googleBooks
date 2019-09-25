@@ -58,17 +58,15 @@ class Home extends Component {
 
   render() {
     return (
+      <div>
       <Container>
-        <Row>
-          <Col size="md-12">
             <Jumbotron>
               <h1 className="text-center">
                 <strong>Google Books Search (React).</strong>
               </h1>
               <h2 className="text-center">Search your favorite books and save them.</h2>
             </Jumbotron>
-          </Col>
-          <Col size="md-12">
+
             <Card title="Book Search" icon="far fa-book">
               <Form
                 handleInputChange={this.handleInputChange}
@@ -76,10 +74,7 @@ class Home extends Component {
                 q={this.state.q}
               />
             </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col size="md-12">
+
             <Card title="Results">
               {this.state.books.length ? (
                 <List>
@@ -107,10 +102,9 @@ class Home extends Component {
                 <h2 className="text-center">{this.state.message}</h2>
               )}
             </Card>
-          </Col>
-        </Row>
+        </Container>
         <Footer />
-      </Container>
+        </div>
     );
   }
 }

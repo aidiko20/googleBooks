@@ -2,7 +2,7 @@ import React from "react";
 
 function Form ({ q, handleInputChange, handleFormSubmit }) {
     return (
-        <from>
+        <form>
             <div className="form-group">
                 <label htmlFor="Query">
                     <strong> Book </strong>
@@ -26,7 +26,7 @@ function Form ({ q, handleInputChange, handleFormSubmit }) {
                     Search
                 </button>
             </div>
-        </from>
+        </form>
     );
 }
 export default Form;
