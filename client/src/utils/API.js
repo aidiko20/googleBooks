@@ -6,7 +6,7 @@ export default {
     },
 
     getSavedBooks: function() {
-        return axios.geet("/api/books");
+        return axios.get("/api/books");
     },
 
     deleteBook: function(id) {

@@ -6,111 +6,113 @@ import Book from "../components/Book";
 import Footer from "../components/Footer";
 import API from "../utils/API";
 import { Col, Row, Container } from "../components/Grid";
-import { Link } from "../components/List";
+import { List } from "../components/List";
 
 class Home extends Component {
-    state = {
-        book: [],
-        q: "",
-        message: "Search For A Book To Begin!"
-    };
+  state = {
+    books: [],
+    q: "",
+    message: "Search For A Book To Begin!"
+  };
 
-    handleInputChange = event => {
-        const { name, value } = event.target;
+  handleInputChange = event => {
+    const { name, value } = event.target;
+    this.setState({
+      [name]: value
+    });
+  };
+
+  getBooks = () => {
+    API.getBooks(this.state.q)
+      .then(res =>
         this.setState({
-            [name]: value
-        });
-    };
+          books: res.data
+        })
+      )
+      .catch(() =>
+        this.setState({
+          books: [],
+          message: "No Books Found, Please Try Again"
+        })
+      );
+  };
 
-    getBooks = () => {
-        API.getBooks(this.state.q)
-            .then(res =>
-                this.setState({
-                    books: res.data
-                })
-            )
-            .catch(() =>
-                this.setState({
-                    books: [],
-                    message: "No Books Found, Try Again"
-                })
-            );
-    };
+  handleFormSubmit = event => {
+    event.preventDefault();
+    this.getBooks();
+  };
 
-    handleFormSubmit = event => {
-        event.preventDefault();
-        this.getBooks();
-    };
+  handleBookSave = id => {
+    const book = this.state.books.find(book => book.id === id);
 
-    handleBookSave = id => {
-        const book = this.state.book.find(book => book.id === id);
+    API.saveBook({
+      googleId: book.id,
+      title: book.volumeInfo.title,
+      subtitle: book.volumeInfo.subtitle,
+      link: book.volumeInfo.infoLink,
+      authors: book.volumeInfo.authors,
+      description: book.volumeInfo.description,
+      image: book.volumeInfo.imageLinks.thumbnail
+    }).then(() => this.getBooks());
+  };
 
-        API.saveBook({
-            googleId: book.id,
-            title: book.volumeInfo.subtitle,
-            link: book.volumeInfo.infoLink,
-            authors: book.volumeInfo.authors,
-            description: book.volumeInfo.imageLinks.thumbnail
-        }).then(() => this.getBooks());
-    };
-
-    render() {
-        return (
-            <Container>
-                <Row>
-                    <Col size="md-12">
-                        <Jumbotron>
-                            <h1 className="text-center">
-                                <strong>Google Books Search (React)</strong>
-                            </h1>
-                            <h2 className="text-center">Search your favorite books and save them.</h2>
-                        </Jumbotron>
-                    </Col>
-                    <Col size="md-12">
-                        <Card title="Book Search" icon="far fa-book">
-                            <Form
-                                handleInputChange={this.handleInputChange}
-                                handleFormSubmit={this.handleFormSubmit}
-                                q={this.state.q}
-                            />
-                        </Card>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col size="md-12">
-                        <Card title="Results">
-                            {this.state.books.length ? (
-                                <List>
-                                    {this.state.books.map(book => (
-                                        <Book
-                                            key={book.id}
-                                            title={book.volumeInfo.title}
-                                            subtitile={book.volumeInfo.subtitile}
-                                            link={book.volumeInfo.infoLink}
-                                            authors={book.volumeInfo.authors.join(", ")}
-                                            description={book.volumeInfo.description}
-                                            image={book.volumeInfo.imageLinks.thumbnail}
-                                            Button={() => (
-                                                <button
-                                                    onClick={() => this.handleBookSave(book.id)}
-                                                    className="btn btn-primary ml-2"
-                                                >
-                                                    Save
-                                            </button>
-                                            )}
-                                        />
-                                    ))}
-                                </List>
-                            ) : (
-                                    <h2 className="text-center">{this.state.message}</h2>
-                                )}
-                        </Card>
-                    </Col>
-                </Row>
-                <Footer />
-            </Container>
-        );
-    }
+  render() {
+    return (
+      <Container>
+        <Row>
+          <Col size="md-12">
+            <Jumbotron>
+              <h1 className="text-center">
+                <strong>Google Books Search (React).</strong>
+              </h1>
+              <h2 className="text-center">Search your favorite books and save them.</h2>
+            </Jumbotron>
+          </Col>
+          <Col size="md-12">
+            <Card title="Book Search" icon="far fa-book">
+              <Form
+                handleInputChange={this.handleInputChange}
+                handleFormSubmit={this.handleFormSubmit}
+                q={this.state.q}
+              />
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col size="md-12">
+            <Card title="Results">
+              {this.state.books.length ? (
+                <List>
+                  {this.state.books.map(book => (
+                    <Book
+                      key={book.id}
+                      title={book.volumeInfo.title}
+                      subtitle={book.volumeInfo.subtitle}
+                      link={book.volumeInfo.infoLink}
+                      authors={book.volumeInfo.authors.join(", ")}
+                      description={book.volumeInfo.description}
+                      image={book.volumeInfo.imageLinks.thumbnail}
+                      Button={() => (
+                        <button
+                          onClick={() => this.handleBookSave(book.id)}
+                          className="btn btn-primary ml-2"
+                        >
+                          Save
+                        </button>
+                      )}
+                    />
+                  ))}
+                </List>
+              ) : (
+                <h2 className="text-center">{this.state.message}</h2>
+              )}
+            </Card>
+          </Col>
+        </Row>
+        <Footer />
+      </Container>
+    );
+  }
 }
 
 export default Home;
